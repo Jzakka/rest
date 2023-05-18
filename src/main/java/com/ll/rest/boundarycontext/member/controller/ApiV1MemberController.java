@@ -1,4 +1,4 @@
-package com.ll.rest.boundarycontext.controller;
+package com.ll.rest.boundarycontext.member.controller;
 
 import com.ll.rest.base.rsData.RsData;
 import com.ll.rest.boundarycontext.member.dto.MemberDto;
