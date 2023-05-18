@@ -93,10 +93,7 @@ public class ApiV1ArticlesController {
         RsData<Article> articleRsData = RsData.produce(Article.class)
                 .then(rsData -> articleService.findById(id));
 
-        return RsData.of(
-                articleRsData.getResultCode(),
-                articleRsData.getMsg(),
-                new ArticleResponse(articleRsData.getData()));
+        return articleRsData.mapToDto(ArticleResponse.class);
     }
 
     @Data
