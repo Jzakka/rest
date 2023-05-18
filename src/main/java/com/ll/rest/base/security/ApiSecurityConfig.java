@@ -5,6 +5,7 @@ import com.ll.rest.base.security.filter.JwtAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -27,9 +28,9 @@ public class ApiSecurityConfig {
                 .exceptionHandling(exHandle -> exHandle.authenticationEntryPoint(apiAuthenticationEntryPoint))
                 .authorizeHttpRequests(
                         authHttpRequests -> authHttpRequests
-                                .requestMatchers("/api/*/member/login").permitAll()
-                                .requestMatchers("/api/*/articles").permitAll()
-                                .requestMatchers("/api/*/articles/*").permitAll()
+                                .requestMatchers(HttpMethod.POST,"/api/*/member/login").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/*/articles").permitAll()
+                                .requestMatchers(HttpMethod.GET, "/api/*/articles/*").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
