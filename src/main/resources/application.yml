@@ -1,0 +1,28 @@
+spring:
+  profiles:
+    active: dev
+    include: secret
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://127.0.0.1:3306/rest_api__2023_05_17___dev?useUnicode=true&characterEncoding=utf8&autoReconnect=true&serverTimezone=Asia/Seoul
+    username: lldj
+    password: ${MYSQL_PW}
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+        use_sql_comments: true
+logging:
+  level:
+    root: INFO
+    com.ll.rest_api: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.hibernate.orm.jdbc.extract: TRACE
+custom:
+  site:
+    baseUrl: http://localhost
+  jwt:
+    secretKey: d32oiru8934eyuw9oifskneorgreovhoif3hp9ru0efupwosdkfceroih2ijwdcopejur-30ifu902u09uefjldjsiosf
