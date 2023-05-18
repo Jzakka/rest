@@ -26,8 +26,9 @@ public class ApiSecurityConfig {
                 .securityMatcher("/api/**")
                 .exceptionHandling(exHandle -> exHandle.authenticationEntryPoint(apiAuthenticationEntryPoint))
                 .authorizeHttpRequests(
-                        authHttpRequests -> authHttpRequests.requestMatchers("/api/*/member/login")
-                                .permitAll()
+                        authHttpRequests -> authHttpRequests
+                                .requestMatchers("/api/*/member/login").permitAll()
+                                .requestMatchers("/api/*/articles").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
