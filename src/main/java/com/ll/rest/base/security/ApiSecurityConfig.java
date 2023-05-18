@@ -29,6 +29,7 @@ public class ApiSecurityConfig {
                         authHttpRequests -> authHttpRequests
                                 .requestMatchers("/api/*/member/login").permitAll()
                                 .requestMatchers("/api/*/articles").permitAll()
+                                .requestMatchers("/api/*/articles/*").permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
