@@ -36,8 +36,12 @@ public class ArticleService {
         return articleRepository.findAllByOrderByIdDesc();
     }
 
-    public Optional<Article> findById(Long id) {
-        return articleRepository.findById(id);
+    public RsData<Article> findById(Long id) {
+        Optional<Article> article = articleRepository.findById(id);
+        if (article.isPresent()) {
+            return RsData.of("S-1", "성공", article.get());
+        }
+        return RsData.of("F-1", "%d번 게시글은 존재하지 않습니다.".formatted(id));
     }
 
     public void delete(Article article) {
@@ -72,11 +76,12 @@ public class ArticleService {
         );
     }
 
-    public RsData canModify(Member actor, Article article) {
+    public RsData<Article> canModify(Member actor, Article article) {
         if (Objects.equals(actor.getId(), article.getAuthor().getId())) {
             return RsData.of(
                     "S-1",
-                    "게시물을 수정할 수 있습니다."
+                    "게시물을 수정할 수 있습니다.",
+                    article
             );
         }
 

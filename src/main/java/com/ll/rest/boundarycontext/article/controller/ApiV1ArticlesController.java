@@ -19,7 +19,6 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -91,15 +90,13 @@ public class ApiV1ArticlesController {
     @GetMapping(value = "/{id}")
     @Operation(summary = "단건조회")
     public RsData<ArticleResponse> article(@PathVariable Long id) {
-        return articleService.findById(id).map(article -> RsData.of(
-                "S-1",
-                "성공",
-                new ArticleResponse(article)
-        )).orElseGet(() -> RsData.of(
-                "F-1",
-                "%d번 게시물은 존재하지 않습니다.".formatted(id),
-                null
-        ));
+        RsData<Article> articleRsData = RsData.produce(Article.class)
+                .then(rsData -> articleService.findById(id));
+
+        return RsData.of(
+                articleRsData.getResultCode(),
+                articleRsData.getMsg(),
+                new ArticleResponse(articleRsData.getData()));
     }
 
     @Data
@@ -122,27 +119,11 @@ public class ApiV1ArticlesController {
             @PathVariable Long id) {
         Member member = memberService.findByUsername(user.getUsername()).orElseThrow();
 
-        Optional<Article> optionalArticle = articleService.findById(id);
+        RsData<Article> articleRs = RsData.produce(Article.class)
+                .then(rsData -> articleService.findById(id))
+                .then(rsData -> articleService.canModify(member, rsData.getData()))
+                .then(rsData -> articleService.modify(rsData.getData(), modifyRequest.getSubject(), modifyRequest.getContent()));
 
-        if (optionalArticle.isEmpty()) {
-            return RsData.of(
-                    "F-1",
-                    "%d번 게시물은 존재하지 않습니다.".formatted(id),
-                    null);
-        }
-
-        RsData canModify = articleService.canModify(member, optionalArticle.get());
-
-        if (canModify.isFail()) {
-            return canModify;
-        }
-
-        RsData<Article> modifyRs = articleService.modify(optionalArticle.get(), modifyRequest.getSubject(), modifyRequest.getContent());
-
-        return RsData.of(
-                modifyRs.getResultCode(),
-                modifyRs.getMsg(),
-                new ModifyResponse(modifyRs.getData())
-        );
+        return articleRs.mapToDto(ModifyResponse.class);
     }
 }
